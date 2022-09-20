@@ -1,0 +1,41 @@
+version: "3"
+services:
+    db:
+        image: mysql:latest
+        container_name: "mysql"
+        restart: always
+        ports:
+            - "3306:3306"
+        volumes:
+            - "${USER_DATA_HOME}/mysql/conf.d:/etc/mysql/conf.d"
+            - "${USER_DATA_HOME}/mysql/logs:/logs"
+            - "${USER_DATA_HOME}/mysql/data:/var/lib/mysql"
+        environment:
+            MYSQL_ROOT_PASSWORD: 123456
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:latest
+        container_name: "phpmyadmin"
+        restart: always
+        ports:
+            - "8081:80"
+        links: 
+            - "db"
+    php:
+        image: bitnami/php-fpm:latest
+        container_name: "php-fpm"
+        restart: always
+        ports:
+            - "9000:9000"
+        volumes:
+            - "${USER_DATA_HOME}/www:/www"
+    nginx:
+        image: nginx:latest
+        container_name: "nginx"
+        restart: always
+        ports:
+            - "8080:80"
+        volumes:
+            - "${USER_DATA_HOME}/www:/www"
+            - "${USER_DATA_HOME}/nginx/conf.d:/etc/nginx/conf.d"
+        links: 
+            - "php"
