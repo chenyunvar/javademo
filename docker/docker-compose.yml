@@ -12,6 +12,7 @@ services:
             - "${USER_DATA_HOME}/mysql/data:/var/lib/mysql"
         environment:
             MYSQL_ROOT_PASSWORD: 123456
+
     phpmyadmin:
         image: phpmyadmin/phpmyadmin:latest
         container_name: "phpmyadmin"
@@ -20,6 +21,7 @@ services:
             - "8081:80"
         links: 
             - "db"
+
     php:
         image: bitnami/php-fpm:latest
         container_name: "php-fpm"
@@ -28,6 +30,7 @@ services:
             - "9000:9000"
         volumes:
             - "${USER_DATA_HOME}/www:/www"
+
     nginx:
         image: nginx:latest
         container_name: "nginx"
@@ -39,3 +42,12 @@ services:
             - "${USER_DATA_HOME}/nginx/conf.d:/etc/nginx/conf.d"
         links: 
             - "php"
+
+    registry:
+        image: registry:latest
+        container_name: "registry"
+        restart: always
+        ports:
+            - "5000:5000"
+        volumes:
+            - "${USER_DATA_HOME}/registry:/var/lib/registry"
